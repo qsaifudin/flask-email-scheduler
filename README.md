@@ -1,4 +1,4 @@
-# Flask Email Scheduler By Saif
+# Flask Email Scheduler By Saifu
 
 ## Author
 
