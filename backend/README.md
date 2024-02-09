@@ -9,4 +9,5 @@
 
 ## Setup
 
-Detail setup instructions and system requirements are already available in the `README.me` file inside the backend and frontend folders.
+- install poetry
+- run `poetry install`
