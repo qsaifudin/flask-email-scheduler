@@ -9,7 +9,13 @@ readme = "README.md"
 python = "^3.11"
 pytest = "^8.0.0"
 sqlalchemy = "^2.0.25"
+flask = "^3.0.2"
+flask-sqlalchemy = "^3.1.1"
+celery = "^5.3.6"
+pytz = "^2024.1"
 
+[tool.poetry.scripts]
+start = "my_package.log_revision:start"
 
 [build-system]
 requires = ["poetry-core"]
