@@ -36,7 +36,6 @@ def get_all_emails():
     emails = Email.query.all()
     email_data = [
         {
-            # "id": email.id,
             "event_id": email.event_id,
             "email_subject": email.email_subject,
             "email_content": email.email_content,

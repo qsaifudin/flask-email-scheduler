@@ -1,5 +1,6 @@
 # src/__init__.py
 from flask import Flask
+from flask_cors import CORS
 from .db.email import db
 from .routes.emailRoute import route_app
 from .config.db import DevelopmentConfig
@@ -7,8 +8,10 @@ from .config.db import DevelopmentConfig
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
 
-    #
+    # Load configuration
     app.config.from_object(config_class)
+    
+    CORS(app)
 
     # Initialize database
     db.init_app(app)
