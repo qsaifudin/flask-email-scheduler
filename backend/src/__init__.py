@@ -1,6 +1,6 @@
 # src/__init__.py
 from flask import Flask
-from .models.Email import db
+from .db.email import db
 from .routes.emailRoute import route_app
 from .config.db import DevelopmentConfig
 

@@ -1,6 +1,6 @@
 # src/email_logic.py
 from flask import jsonify
-from ..models.Email import db, Email
+from ..db.email import db, Email,ArchiveEmail
 from datetime import datetime
 from .email_scheduler import start_email_scheduler, stop_email_scheduler
 
@@ -34,6 +34,25 @@ def save_email(data):
 
 def get_all_emails():
     emails = Email.query.all()
+    email_data = [
+        {
+            # "id": email.id,
+            "event_id": email.event_id,
+            "email_subject": email.email_subject,
+            "email_content": email.email_content,
+            "timestamp": email.timestamp.strftime("%d %b %Y %H:%M"),
+        }
+        for email in emails
+    ]
+    response = {
+        "status": "success",
+        "message": "Retrieved all emails successfully",
+        "data": email_data,
+    }
+    return jsonify(response), 200
+
+def get_all_archived__emails():
+    emails = ArchiveEmail.query.all()
     email_data = [
         {
             # "id": email.id,
