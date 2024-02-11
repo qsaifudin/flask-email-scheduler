@@ -1,25 +1,18 @@
 # src/__init__.py
 from flask import Flask
-from .models import db
-# from routes import route_app
-# from .tasks import make_celery
+from .models.Email import db
+from .routes.emailRoute import route_app
+from .config.db import DevelopmentConfig
 
-import os
-
-def create_app():
+def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///emails.db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    
-    # Specify the path to the instance folder inside the src folder
-    # instance_path = os.path.join(app.root_path, 'instance')
-    # app.instance_path = instance_path
+
+    #
+    app.config.from_object(config_class)
 
     # Initialize database
     db.init_app(app)
-
-    # Import routes and register them
-    from .routes import route_app
+    
     # Register routes
     app.register_blueprint(route_app)
     
@@ -28,4 +21,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run()
