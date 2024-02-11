@@ -13,8 +13,8 @@
 
     <v-main>
       <v-container>
+        {{ schedulerStatus?".":"" }}
         <v-row class="justify-center align-center px-3 my-2">
-          app {{ schedulerStatus }}
           <SchedulerSwitch class="mr-3" @change-scheduler="toggleScheduler" v-model="schedulerStatus" />
           <v-spacer></v-spacer>
           <AddEmailDialog @add-email="addEmail" />

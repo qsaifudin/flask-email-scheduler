@@ -48,3 +48,27 @@ Ensure that your system meets the following requirements:
    ```bash
    python -m pytest tests/
    ```
+
+## API Endpoints
+
+### save email
+- Method: POST
+- URL: `localhost:5000/save_emails`
+- Description: Endpoint to save an email with provided data.
+- Request Body:
+   ```json
+   {
+    "event_id": "1",
+    "email_subject": "halo",
+    "email_content": "ini halo",
+    "timestamp": "11 Feb 2025 12:03"
+   }
+   ```
+### Get All Emails
+- Method: GET
+- URL: `localhost:5000/emails/all`
+
+### Toggle Email Scheduler
+- Method: POST
+- URL: `localhost:5000/toggle_email_scheduler?enabled=on`
+- Description: Endpoint to toggle the email scheduler on/off.

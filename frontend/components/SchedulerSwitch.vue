@@ -1,9 +1,9 @@
 <template>
     <div>
         <div>
-            Email Scheduler Status
+            Email Scheduler Status  {{ enabled? ".":"" }}
         </div>
-        <div> {{ enabled }}
+        <div>
             <v-switch hide-details inset v-model="enabled" :label="schedulerStatus ? 'Active' : 'Inactive'"
                 @change="handleChange" color="primary"></v-switch>
 
