@@ -1,9 +1,9 @@
 # src/routes.py
-# from .main import app
 from flask import request, jsonify, Blueprint
-from models import db, Email
+from .models import db, Email
 from datetime import datetime
 import pytz
+from .email_scheduler import start_email_scheduler, stop_email_scheduler
 
 route_app = Blueprint("route_app", __name__)
 
@@ -29,6 +29,9 @@ def save_emails():
     )
     db.session.add(email)
     db.session.commit()
+    
+    # Enqueue the Celery task to send email
+    send_email_task.apply_async(args=[email.event_id])
 
     response = {
         "data": data,
@@ -88,3 +91,19 @@ def get_emails():
         "data": email_data,
     }
     return jsonify(response), 200
+
+
+@route_app.route("/toggle_email_scheduler", methods=["POST"])
+def toggle_email_scheduler():
+    # Parse the query parameter to determine whether to turn on or off the email scheduler
+    enabled = request.args.get("enabled", "").lower() in ["true", "1", "on", "yes"]
+
+    # Toggle the email scheduler based on the value of the 'enabled' parameter
+    if enabled:
+        start_email_scheduler()
+        message = "Email scheduler started."
+    else:
+        stop_email_scheduler()
+        message = "Email scheduler stopped."
+
+    return jsonify({"message": message}), 200

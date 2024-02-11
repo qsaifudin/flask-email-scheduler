@@ -13,6 +13,7 @@ flask = "^3.0.2"
 flask-sqlalchemy = "^3.1.1"
 celery = "^5.3.6"
 pytz = "^2024.1"
+flower = "^2.0.1"
 
 [tool.poetry.scripts]
 start = "my_package.log_revision:start"
