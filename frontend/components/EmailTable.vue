@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-title class="my-3 align-center text-lg-center">Emails Scheduler</v-card-title>
+        <v-card-title class="my-3 align-center">Emails Scheduler</v-card-title>
         <v-data-table :headers="headers" :items="emails" item-key="event_id" class="elevation-1">
             <template v-slot:item.timestamp="{ item }">
                 {{ new Date(item.timestamp).toLocaleString() }}

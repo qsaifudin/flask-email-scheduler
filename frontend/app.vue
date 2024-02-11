@@ -13,9 +13,10 @@
 
     <v-main>
       <v-container>
-        <v-row class="justify-center align-center">
+        <v-row class="justify-center align-center px-3 my-2">
+          app {{ schedulerStatus }}
+          <SchedulerSwitch class="mr-3" @change-scheduler="toggleScheduler" v-model="schedulerStatus" />
           <v-spacer></v-spacer>
-          <SchedulerSwitch class="mr-3" v-model="schedulerEnabled" />
           <AddEmailDialog @add-email="addEmail" />
         </v-row>
         <EmailTable :emails="emails" />
@@ -40,12 +41,15 @@ export default {
     return {
       emails: [],
       schedulerStatus: false,
-      BASE_URL: useRuntimeConfig().public.BASE_URL
+      BASE_URL: useRuntimeConfig().public.BASE_URL,
+      emailFetchTimer: null,
+      isDataLoaded : false
     }
   },
   async mounted() {
     await this.fetchEmails()
     await this.fetchSchedulerStatus()
+    this.isDataLoaded = true
   },
   methods: {
     async fetchEmails() {
@@ -56,8 +60,7 @@ export default {
         const emails = emailsResponse.data.map(email => ({ ...email, status: 'pending' }))
         const archiveEmails = archiveEmailsResponse.data.map(email => ({ ...email, status: 'success' }))
 
-
-
+        this.emails = []
         this.emails = [...emails, ...archiveEmails]
       } catch (error) {
         console.error('Error fetching emails:', error)
@@ -65,15 +68,23 @@ export default {
     },
     async fetchSchedulerStatus() {
       try {
-        const response = await $fetch(this.BASE_URL +'/scheduler/status')
+        const response = await $fetch(this.BASE_URL + '/scheduler/status')
         this.schedulerStatus = response.status
+
+        if (this.schedulerStatus) {
+          // If scheduler is enabled, start fetching emails periodically
+          this.emailFetchTimer = setInterval(() => this.fetchEmails(), 5000);
+        } else {
+          // If scheduler is disabled, stop the email fetching timer
+          clearInterval(this.emailFetchTimer);
+        }
       } catch (error) {
         console.error('Error fetching scheduler status:', error)
       }
     },
     async addEmail(emailData) {
       try {
-        await $fetch(this.BASE_URL +'/save_emails', {
+        await $fetch(this.BASE_URL + '/save_emails', {
           method: 'POST',
           body: JSON.stringify(emailData)
         })
@@ -84,10 +95,10 @@ export default {
     },
     async toggleScheduler(status) {
       try {
-        await $fetch(this.BASE_URL +'/scheduler/toggle', {
+        await $fetch(this.BASE_URL + `/toggle_email_scheduler?enabled=${status}`, {
           method: 'POST',
-          body: JSON.stringify({ status })
         })
+        await this.fetchSchedulerStatus()
       } catch (error) {
         console.error('Error toggling scheduler:', error)
       }

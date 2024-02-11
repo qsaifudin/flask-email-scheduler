@@ -33,7 +33,7 @@ def save_email(data):
 
 
 def get_all_emails():
-    emails = Email.query.all()
+    emails = Email.query.order_by(Email.event_id.desc()).all()
     email_data = [
         {
             "event_id": email.event_id,
@@ -51,10 +51,9 @@ def get_all_emails():
     return jsonify(response), 200
 
 def get_all_archived__emails():
-    emails = ArchiveEmail.query.all()
+    emails = ArchiveEmail.query.order_by(ArchiveEmail.event_id.desc()).all()
     email_data = [
         {
-            # "id": email.id,
             "event_id": email.event_id,
             "email_subject": email.email_subject,
             "email_content": email.email_content,

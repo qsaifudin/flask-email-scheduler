@@ -5,10 +5,12 @@ import time
 from ..db.email import db, Email, ArchiveEmail
 from datetime import datetime
 import pytz
+from flask import jsonify
 
 # Flag to control the email scheduler
 email_scheduler_running = False
-timezone_sg = pytz.timezone('Asia/Singapore')
+timezone_sg = pytz.timezone("Asia/Singapore")
+
 
 # Start the email scheduler in a separate thread
 def start_email_scheduler():
@@ -52,7 +54,9 @@ def process_emails(emails):
         # Iterate through each email
         for email in emails:
             # Convert to UTC+8 timezone
-            current_time_sg = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(timezone_sg)
+            current_time_sg = (
+                datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(timezone_sg)
+            )
             email_timestamp_sg = email.timestamp.astimezone(timezone_sg)
 
             if email_timestamp_sg <= current_time_sg:
@@ -66,7 +70,7 @@ def process_emails(emails):
 
                 db.session.add(archive_email)
                 db.session.commit()
-                
+
                 db.session.delete(email)
                 db.session.commit()
 
@@ -75,3 +79,7 @@ def process_emails(emails):
 
     except Exception as e:
         print(f"Error occurred while processing emails: {e}")
+
+
+def get_scheduler_status():
+    return jsonify({"status": email_scheduler_running}), 200
